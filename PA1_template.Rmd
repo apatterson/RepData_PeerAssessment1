@@ -39,14 +39,30 @@ median(steps.per.day$x, na.rm=TRUE)
 
 ```
 
-
-
 ## What is the average daily activity pattern?
 
+```{r echo=TRUE}
+avg.per.interval <- aggregate(activity$steps, 
+                           list(Interval=activity$interval), 
+                           function(steps){
+                               mean(steps, na.rm=TRUE)
+                           })
 
+plot(avg.per.interval$Interval,
+     avg.per.interval$x,
+     type='l',
+     main="Average daily activity",
+     xlab="Interval (minutes)",
+     ylab="Avg number of steps")
+
+
+```
+
+Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps
+
+```{r echo=TRUE}
+avg.per.interval[which.max(avg.per.interval$x),"Interval"]
+```
 
 ## Imputing missing values
-
-
-
 ## Are there differences in activity patterns between weekdays and weekends?
