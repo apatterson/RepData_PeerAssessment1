@@ -7,10 +7,37 @@ output:
 
 
 ## Loading and preprocessing the data
+Unzip the data and load it into a data frame.
+```{r echo=TRUE}
+unzip("activity.zip")
+activity <- read.csv("activity.csv")
+str(activity)
+
+```
 
 
 
 ## What is mean total number of steps taken per day?
+Aggregate the data frame by day, then take the mean.
+```{r echo=TRUE}
+steps.per.day <- aggregate(activity$steps, 
+                           list(day=activity$date), sum)
+hist(steps.per.day$x, 
+     breaks=10, 
+     main="Histogram of steps per day",
+     xlab="Steps")
+```
+```{r echo=TRUE}
+```
+###Mean
+```{r echo=TRUE}
+mean(steps.per.day$x, na.rm=TRUE)
+```
+###Median
+```{r echo=TRUE}
+median(steps.per.day$x, na.rm=TRUE)
+
+```
 
 
 
