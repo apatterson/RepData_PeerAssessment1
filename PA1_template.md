@@ -1,25 +1,28 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
 Unzip the data and load it into a data frame.
-```{r echo=TRUE}
+
+```r
 unzip("activity.zip")
 activity <- read.csv("activity.csv")
 str(activity)
+```
 
+```
+## 'data.frame':	17568 obs. of  3 variables:
+##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ date    : Factor w/ 61 levels "2012-10-01","2012-10-02",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
 ```
 
 
 
 ## What is mean total number of steps taken per day?
 Aggregate the data frame by day, then take the mean.
-```{r echo=TRUE}
+
+```r
 steps.per.day <- aggregate(activity$steps, 
                            list(day=activity$date), sum)
 hist(steps.per.day$x, 
@@ -27,19 +30,31 @@ hist(steps.per.day$x,
      main="Histogram of steps per day",
      xlab="Steps")
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)
 ###Mean
-```{r echo=TRUE}
+
+```r
 mean(steps.per.day$x, na.rm=TRUE)
 ```
-###Median
-```{r echo=TRUE}
-median(steps.per.day$x, na.rm=TRUE)
 
+```
+## [1] 10766.19
+```
+###Median
+
+```r
+median(steps.per.day$x, na.rm=TRUE)
+```
+
+```
+## [1] 10765
 ```
 
 ## What is the average daily activity pattern?
 
-```{r}
+
+```r
 avg.per.interval <- aggregate(activity$steps, 
                            list(Interval=activity$interval), 
                            function(steps){
@@ -52,26 +67,36 @@ plot(avg.per.interval$Interval,
      main="Average daily activity",
      xlab="Interval (minutes)",
      ylab="Avg number of steps")
-
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)
 
 Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r}
+
+```r
 avg.per.interval[which.max(avg.per.interval$x),"Interval"]
+```
+
+```
+## [1] 835
 ```
 
 ## Imputing missing values
 
 + Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
-```{r}
-sum(!complete.cases(activity))
 
+```r
+sum(!complete.cases(activity))
+```
+
+```
+## [1] 2304
 ```
 + Devise a strategy for filling in all of the missing values in the dataset. (We will use the mean for the 5 minute interval)
 
-```{r}
+
+```r
 activity$steps <- sapply(seq_along(activity$steps), function(i) {
     if(is.na(activity$steps[[i]])) {
         avg.per.interval$x[[which(avg.per.interval$Interval == activity$interval[[i]])]]
@@ -87,6 +112,8 @@ hist(steps.per.day$x,
      main="Histogram of steps per day",
      xlab="Steps")
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-8-1.png)
 
 The shape of the histogram is the same but the frequencies are greater. This is to be expected given that we have added values based on the existing values.
 
