@@ -118,3 +118,41 @@ hist(steps.per.day$x,
 The shape of the histogram is the same but the frequencies are greater. This is to be expected given that we have added values based on the existing values.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+
+```r
+activity$weekday <- weekdays(as.Date(activity$date, "%Y-%m-%d")) 
+activity$is.weekend <- sapply(activity$weekday, function(day) if(day %in% c("Saturday", "Sunday")) "weekend" else "weekday")
+
+weekend <- activity[activity$is.weekend == "weekend",]
+avg.per.interval <- aggregate(weekend$steps, 
+                           list(Interval=weekend$interval), 
+                           function(steps){
+                               mean(steps, na.rm=TRUE)
+                           })
+par(mfrow=c(2,1))
+plot(avg.per.interval$Interval,
+     avg.per.interval$x,
+     type='l',
+     main="Weekends",
+     xlab="Interval (minutes)",
+     ylab="Avg number of steps")
+
+weekday <- activity[activity$is.weekend == "weekday",]
+avg.per.interval <- aggregate(weekday$steps, 
+                           list(Interval=weekday$interval), 
+                           function(steps){
+                               mean(steps, na.rm=TRUE)
+                           })
+
+plot(avg.per.interval$Interval,
+     avg.per.interval$x,
+     type='l',
+     main="Weekdays",
+     xlab="Interval (minutes)",
+     ylab="Avg number of steps")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)
+
+Weekday activity shows distinct peaks in the morning and evening, with weekend activity being more spread out during the day.
